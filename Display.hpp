@@ -1,6 +1,7 @@
 #ifndef DISPLAY_HPP_INCLUDED
 #define DISPLAY_HPP_INCLUDED
 
+#define NOMINMAX
 #include <windows.h>
 #include "Transparency.hpp"
 
@@ -9,7 +10,7 @@ namespace Game {
     class Display {
     friend class Texture;
     private:
-        int width, height;
+        SHORT width, height;
 
         // a "2d" array of character pixels
         CHAR_INFO* display;

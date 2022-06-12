@@ -113,7 +113,7 @@ namespace Game {
         }
 
 
-        unsigned long eventCount;
+        DWORD eventCount;
         GetNumberOfConsoleInputEvents(input, &eventCount);
 
         if (eventCount == 0) {
