@@ -1,6 +1,9 @@
 #ifndef COLOR_HPP_INCLUDED
 #define COLOR_HPP_INCLUDED
 
+#include <map>
+#include <string>
+
 namespace Game {
 
     enum Color {
@@ -38,6 +41,44 @@ namespace Game {
         BG_LIGHT_PURPLE = 0xD0,
         BG_YELLOW       = 0x60,
         BG_LIGHT_YELLOW = 0xE0,
+    };
+
+    static const std::map<std::string, Color> FG_COLOR_MAP = {
+        { "black",        Color::FG_BLACK },
+        { "gray",         Color::FG_GRAY },
+        { "light_gray",   Color::FG_LIGHT_GRAY },
+        { "white",        Color::FG_WHITE },
+        { "blue",         Color::FG_BLUE },
+        { "light_blue",   Color::FG_LIGHT_BLUE },
+        { "green",        Color::FG_GREEN },
+        { "light_green",  Color::FG_LIGHT_GREEN },
+        { "aqua",         Color::FG_AQUA },
+        { "light_aqua",   Color::FG_LIGHT_AQUA },
+        { "red",          Color::FG_RED },
+        { "light_red",    Color::FG_LIGHT_RED },
+        { "purple",       Color::FG_PURPLE },
+        { "light_purple", Color::FG_LIGHT_PURPLE },
+        { "yellow",       Color::FG_YELLOW },
+        { "light_yellow", Color::FG_LIGHT_YELLOW },
+    };
+
+    static const std::map<std::string, Color> BG_COLOR_MAP = {
+        { "black",        Color::BG_BLACK },
+        { "gray",         Color::BG_GRAY },
+        { "light_gray",   Color::BG_LIGHT_GRAY },
+        { "white",        Color::BG_WHITE },
+        { "blue",         Color::BG_BLUE },
+        { "light_blue",   Color::BG_LIGHT_BLUE },
+        { "green",        Color::BG_GREEN },
+        { "light_green",  Color::BG_LIGHT_GREEN },
+        { "aqua",         Color::BG_AQUA },
+        { "light_aqua",   Color::BG_LIGHT_AQUA },
+        { "red",          Color::BG_RED },
+        { "light_red",    Color::BG_LIGHT_RED },
+        { "purple",       Color::BG_PURPLE },
+        { "light_purple", Color::BG_LIGHT_PURPLE },
+        { "yellow",       Color::BG_YELLOW },
+        { "light_yellow", Color::BG_LIGHT_YELLOW },
     };
 
 }
