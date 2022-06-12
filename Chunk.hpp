@@ -22,8 +22,15 @@ public:
 
     Chunk(int x, int y) {
 
-        int fillBlock = y > 0 ? y/10 + 1 : 0;
+        int fillBlock = 0;
 
+        if (y > 0) {
+            if (y > 5) {
+                fillBlock = 2;
+            } else {
+                fillBlock = 1;
+            }
+        }
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
