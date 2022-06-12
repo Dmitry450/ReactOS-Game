@@ -3,7 +3,7 @@
 
 #include "Game.hpp"
 #include "Display.hpp"
-#include <Windows.h>
+#include <windows.h>
 
 class State {
 protected:

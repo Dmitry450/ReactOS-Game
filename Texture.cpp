@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include <fstream>
-#include <math.h>
+#include <cmath>
 
 namespace Game {
 
