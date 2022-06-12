@@ -5,6 +5,7 @@
 #include "Texture.hpp"
 #include "World.hpp"
 #include "Entity.hpp"
+#include "Block.hpp"
 #include <vector>
 
 enum GameDirection {
@@ -19,6 +20,7 @@ class GameState : public State {
     static GameState instance;
 
     World world;
+    Game::BlockDefManager block_defs;
 
     //double playerX = 10, playerY = 10;
     Entity player = { 0, 0, 4, 4};

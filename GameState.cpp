@@ -36,6 +36,7 @@ void GameState::setup() {
     blocks.setBackground('\0');
     blocks.setColor(Game::FG_GREEN | Game::BG_RED);
 
+    block_defs.load("block_defs.txt");
 }
 
 void GameState::cleanup() {
@@ -171,8 +172,13 @@ void GameState::render(Game::Display& display) {
 
     for (int x = 0; x < world.width(); x++) {
         for (int y = 0; y < world.height(); y++) {
-            if (world.get(x,y) > 0) {
-                blocks.render(display, x*TILE_WIDTH-(int)player.x+camX, y*TILE_HEIGHT-(int)player.y+camY);
+            int block = world.get(x,y);
+
+            if (block > 0) {
+                Game::BlockDef &def = block_defs.getDef(block);
+                blocks.setColor(def.color);
+
+                blocks.render(display, x*TILE_WIDTH-(int)player.x+camX, y*TILE_HEIGHT-(int)player.y+camY, &def.texture_rect);
             }
         }
     }
