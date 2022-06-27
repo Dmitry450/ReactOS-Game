@@ -36,8 +36,6 @@ class GameState : public State {
 
     Game::Texture playerImg;
 
-    Game::Texture blocks;
-
     bool up = false,
          down = false,
          left = false,

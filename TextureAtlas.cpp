@@ -5,6 +5,10 @@
 
 namespace Game {
     bool TextureAtlas::load(const std::string &path) {
+        if (isLoaded(path)) {
+            return true;
+        }
+
         std::ifstream f(path);
         Rect rect = {0, texture.getHeight(), 0, 0};
 
@@ -26,18 +30,18 @@ namespace Game {
 
         rects[path] = rect;
 
+        f.close();
+
         return true;
     }
 
     Rect TextureAtlas::getRect(const std::string &path) {
-        auto pair = rects.find(path);
-
-        if (pair == rects.end()) {
+        if (!isLoaded(path)) {
             std::string err = "No such texture in atlas: ";
             err += path;
             throw std::invalid_argument(err);
         }
 
-        return pair->second;
+        return rects[path];
     }
 }

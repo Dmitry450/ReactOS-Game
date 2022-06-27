@@ -8,6 +8,7 @@
 #include <windows.h>
 
 #include "Rect.hpp"
+#include "TextureAtlas.hpp"
 
 
 namespace Game {
@@ -22,6 +23,8 @@ namespace Game {
         std::vector<BlockDef> defs;
         BlockDef unknown;
 
+        TextureAtlas atlas;
+
     public:
         BlockDefManager();
 
@@ -32,6 +35,8 @@ namespace Game {
         // Returns block def associated with id or returns unknown block def
         // if id is out of range
         BlockDef &getDef(int id);
+
+        inline TextureAtlas &getAtlas() { return atlas; }
 
     private:
         bool readDef(std::string &line);

@@ -17,7 +17,11 @@ namespace Game {
 
             Rect getRect(const std::string &path);
 
-            const Texture &getTexture() { return texture; }
+            inline bool isLoaded(const std::string &path) {
+                return rects.find(path) != rects.end();
+            }
+
+            inline Texture &getTexture() { return texture; }
     };
 }
 

@@ -15,6 +15,8 @@ namespace Game {
             { 0, 0, TILE_WIDTH, TILE_HEIGHT },
             true,
         };
+
+        atlas.getTexture().setBackground('\0');
     }
 
     bool BlockDefManager::load(const char *path) {
@@ -65,8 +67,8 @@ namespace Game {
     }
 
     bool BlockDefManager::readDef(std::string &line) {
-        // Line format: <texture index> <fg color> <bg color> <is solid>
-        int texture_index;
+        // Line format: <texture path> <fg color> <bg color> <is solid>
+        Rect texture_rect;
         WORD color = 0;
         bool solid;
 
@@ -74,14 +76,16 @@ namespace Game {
 
         std::string input; // Buffer for string input
 
-        // Texture index
+        // Texture path
         f>>input;
 
-        try {
-            texture_index = stoi(input);
-        } catch (std::invalid_argument const& ex) {
-            return false;
+        if (!atlas.isLoaded(input)) {
+            if (!atlas.load(input)) {
+                return false;
+            }
         }
+
+        texture_rect = atlas.getRect(input);
 
         // Foreground color
         f>>input;
@@ -115,7 +119,7 @@ namespace Game {
 
         BlockDef def = {
             color,
-            { 0, texture_index * TILE_HEIGHT + texture_index, TILE_WIDTH, TILE_HEIGHT },
+            texture_rect,
             solid,
         };
 

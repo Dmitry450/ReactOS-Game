@@ -1,3 +1,3 @@
-# texture_index fg_color     bg_color     is_solid
-  1             green        red          true
-  2             gray         light_gray   true
+# texture_path               fg_color     bg_color     is_solid
+  resources/blocks/grass.txt green        red          true
+  resources/blocks/stone.txt light_gray   gray         true

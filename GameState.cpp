@@ -32,10 +32,6 @@ void GameState::setup() {
     playerImg.setTransparency(Game::TRANSPARENT_BG);
     playerImg.setColor(Game::FG_LIGHT_YELLOW);
 
-    blocks.load("blocks.txt");
-    blocks.setBackground('\0');
-    blocks.setColor(Game::FG_GREEN | Game::BG_RED);
-
     block_defs.load("block_defs.txt");
 }
 
@@ -169,6 +165,8 @@ void GameState::update() {
 void GameState::render(Game::Display& display) {
     display.setColor(Game::BG_AQUA | Game::FG_LIGHT_YELLOW);
     display.clear(' ');
+
+    auto blocks = block_defs.getAtlas().getTexture();
 
     for (int x = 0; x < world.width(); x++) {
         for (int y = 0; y < world.height(); y++) {

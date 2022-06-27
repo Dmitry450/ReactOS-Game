@@ -1,0 +1,4 @@
+ d p 0  
+  o o   
+ b  0 o 
+0 o d b 
