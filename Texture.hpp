@@ -42,6 +42,8 @@ namespace Game {
         void setTransparency(Transparency transparency) { this->transparency = transparency; }
         Transparency getTransparency() { return transparency; }
 
+        void appendLine(const std::string &line);
+
     };
 
 }

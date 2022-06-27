@@ -16,11 +16,7 @@ namespace Game {
 
         std::string currentLine;
         while (std::getline(f, currentLine)) {
-            data.push_back(currentLine);
-            if (currentLine.length() > bounds.w) {
-                bounds.w = currentLine.length();
-            }
-            bounds.h++;
+            appendLine(currentLine);
         }
 
         f.close();
@@ -74,6 +70,16 @@ namespace Game {
             }
         }
 
+    }
+
+    void Texture::appendLine(const std::string &line) {
+        data.push_back(line);
+
+        if (line.length() > bounds.w) {
+            bounds.w = line.length();
+        }
+
+        bounds.h++;
     }
 
 }
