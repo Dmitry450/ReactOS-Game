@@ -170,7 +170,7 @@ void GameState::render(Game::Display& display) {
 
     for (int x = 0; x < world.width(); x++) {
         for (int y = 0; y < world.height(); y++) {
-            int block = world.get(x,y);
+            int block = world.get(x, y);
 
             if (block > 0) {
                 Game::BlockDef &def = block_defs.getDef(block);
@@ -220,8 +220,13 @@ bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
             if (move) {
                 // do bounds checking
                 if (x >= 0 && x < world.width() && y >= 0 && y < world.height()) {
+                    int block = world.get(x, y);
 
-                    if (world.get(x, y) > 0) {
+                    if (block <= 0) {
+                        continue;
+                    }
+
+                    if (block_defs.getDef(block).solid) {
                         switch (dir) {
                         case DIR_UP:
                             e->y = (y+1) * TILE_HEIGHT;
