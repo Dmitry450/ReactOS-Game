@@ -56,10 +56,10 @@ namespace Game {
         return true;
     }
 
-    BlockDef &BlockDefManager::getDef(int id) {
+    BlockDef &BlockDefManager::getDef(uint16_t id) {
         --id;
 
-        if (id < 0 || id >= defs.size()) {
+        if (id >= defs.size()) {
             return unknown;
         }
 

@@ -172,7 +172,7 @@ void GameState::render(Game::Display& display) {
         for (int y = 0; y < world.height(); y++) {
             int block = world.get(x, y);
 
-            if (block > 0) {
+            if (block != 0) {
                 Game::BlockDef &def = block_defs.getDef(block);
                 blocks.setColor(def.color);
 
@@ -222,7 +222,7 @@ bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
                 if (x >= 0 && x < world.width() && y >= 0 && y < world.height()) {
                     int block = world.get(x, y);
 
-                    if (block <= 0) {
+                    if (block == 0) {
                         continue;
                     }
 

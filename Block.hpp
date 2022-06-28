@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
 #define NOMINMAX
 #include <windows.h>
@@ -34,7 +35,7 @@ namespace Game {
 
         // Returns block def associated with id or returns unknown block def
         // if id is out of range
-        BlockDef &getDef(int id);
+        BlockDef &getDef(uint16_t id);
 
         inline TextureAtlas &getAtlas() { return atlas; }
 

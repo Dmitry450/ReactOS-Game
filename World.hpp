@@ -35,9 +35,9 @@ public:
     int getOffsetX() { return offsetX; }
     int getOffsetY() { return offsetY; }
 
-    int get(int x, int y);
+    uint16_t get(int x, int y);
 
-    void set(int x, int y, int block);
+    void set(int x, int y, uint16_t block);
 
     // loads or unloads chunks based on player coords
     // sets player coords relative to loaded chunks

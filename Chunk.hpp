@@ -1,6 +1,8 @@
 #ifndef CHUNK_HPP_INCLUDED
 #define CHUNK_HPP_INCLUDED
 
+#include <cstdint>
+
 //#define CHUNK_WIDTH 4
 //#define CHUNK_HEIGHT 4
 
@@ -12,17 +14,17 @@ public:
 
 private:
 
-    int data[width][height];
+    uint16_t data[width][height];
 
 public:
 
-    int* operator[](int pos) {
+    uint16_t* operator[](int pos) {
         return &data[pos][0];
     }
 
     Chunk(int x, int y) {
 
-        int fillBlock = 0;
+        uint16_t fillBlock = 0;
 
         if (y > 0) {
             if (y > 5) {

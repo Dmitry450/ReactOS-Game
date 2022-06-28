@@ -35,7 +35,7 @@ int World::height() {
     return buffHeight * Chunk::height;
 }
 
-int World::get(int x, int y) {
+uint16_t World::get(int x, int y) {
 
     //return 0;
     return (*world
@@ -44,7 +44,7 @@ int World::get(int x, int y) {
     [y%Chunk::height];
 }
 
-void World::set(int x, int y, int block) {
+void World::set(int x, int y, uint16_t block) {
 
     (*world
     [x/Chunk::width * buffHeight + y/Chunk::height])
