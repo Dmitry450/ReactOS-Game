@@ -4,6 +4,7 @@
 #include "State.hpp"
 #include "Texture.hpp"
 #include "World.hpp"
+#include "Tile.hpp"
 #include "Entity.hpp"
 #include "Block.hpp"
 #include <vector>
