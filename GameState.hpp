@@ -23,7 +23,7 @@ class GameState : public State {
     Game::BlockDefManager block_defs;
 
     //double playerX = 10, playerY = 10;
-    Entity player = { 0, 0, 4, 4};
+    Entity player = { 1024*TILE_WIDTH, 1024*TILE_HEIGHT, 4, 4};
     std::vector<Game::Rect> frames = {
         {0, 0, 4, 5},
         {0, 5, 4, 5},

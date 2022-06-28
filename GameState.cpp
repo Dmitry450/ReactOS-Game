@@ -1,4 +1,5 @@
 #include "GameState.hpp"
+#include "Tile.hpp"
 #include "Color.hpp"
 #include <algorithm>
 #include <math.h>
@@ -13,19 +14,7 @@ void GameState::setup() {
     camX = d.getWidth() / 2;
     camY = d.getHeight() / 2;
 
-
     world.create();
-
-    /*world = {
-        {1,1,1,1,1,1},
-        {1,0,0,0,0,1},
-        {1,0,0,0,0,1},
-        {1,0,0,1,1,1},
-        {1,0,0,1,0,1},
-        {1,0,0,0,0,1},
-        {1,0,0,0,0,1},
-        {1,1,1,1,1,1}
-    };*/
 
     // load the player texture
     playerImg.load("player.txt");
@@ -145,19 +134,12 @@ void GameState::update() {
         touchingGround = false;
     }
 
-    world.updateChunks(player);
-
     // mining blocks
     if (mouseLeft || mouseRight) {
         int mouseBlockX = (mouseX-camX+(int)player.x)/TILE_WIDTH;
         int mouseBlockY = (mouseY-camY+(int)player.y)/TILE_HEIGHT;
 
-        if (mouseBlockX < world.width() &&
-            mouseBlockY < world.height() &&
-            mouseBlockX >= 0 &&
-            mouseBlockY >= 0) {
-            world.set(mouseBlockX,mouseBlockY, mouseRight?1:0);
-        }
+        world.set(mouseBlockX,mouseBlockY, mouseRight?1:0);
     }
 
 }
@@ -168,8 +150,14 @@ void GameState::render(Game::Display& display) {
 
     auto blocks = block_defs.getAtlas().getTexture();
 
-    for (int x = 0; x < world.width(); x++) {
-        for (int y = 0; y < world.height(); y++) {
+    int startX = (static_cast<int>(player.x)-camX)/TILE_WIDTH;
+    int endX = startX + game->getDisplay().getWidth()/TILE_WIDTH + 1;
+
+    int startY = (static_cast<int>(player.y)-camY)/TILE_HEIGHT;
+    int endY = startY + game->getDisplay().getHeight()/TILE_HEIGHT + 1;
+
+    for (int x = startX; x <= endX; x++) {
+        for (int y = startY; y <= endY; y++) {
             int block = world.get(x, y);
 
             if (block != 0) {
@@ -204,12 +192,6 @@ void GameState::render(Game::Display& display) {
     strs << player.y;
     display.writeString(strs.str().c_str(), 1, 1);
 
-    std::ostringstream strs2;
-    strs2 << world.getOffsetX();
-    strs2 << ", ";
-    strs2 << world.getOffsetY();
-    display.writeString(strs2.str().c_str(), 1, 2);
-
 }
 
 bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
@@ -218,31 +200,28 @@ bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
         for (int y = e->y/TILE_HEIGHT; y < (int)ceil(e->y+e->h-1)/TILE_HEIGHT + 1; y++) {
 
             if (move) {
-                // do bounds checking
-                if (x >= 0 && x < world.width() && y >= 0 && y < world.height()) {
-                    int block = world.get(x, y);
+                int block = world.get(x, y);
 
-                    if (block == 0) {
-                        continue;
-                    }
+                if (block == 0) {
+                    continue;
+                }
 
-                    if (block_defs.getDef(block).solid) {
-                        switch (dir) {
-                        case DIR_UP:
-                            e->y = (y+1) * TILE_HEIGHT;
-                            break;
-                        case DIR_DOWN:
-                            e->y = y*TILE_HEIGHT - e->h;
-                            break;
-                        case DIR_LEFT:
-                            e->x = (x+1) * TILE_WIDTH;
-                            break;
-                        case DIR_RIGHT:
-                            e->x = x*TILE_WIDTH - e->w;
-                            break;
-                        }
-                        return true;
+                if (block_defs.getDef(block).solid) {
+                    switch (dir) {
+                    case DIR_UP:
+                        e->y = (y+1) * TILE_HEIGHT;
+                        break;
+                    case DIR_DOWN:
+                        e->y = y*TILE_HEIGHT - e->h;
+                        break;
+                    case DIR_LEFT:
+                        e->x = (x+1) * TILE_WIDTH;
+                        break;
+                    case DIR_RIGHT:
+                        e->x = x*TILE_WIDTH - e->w;
+                        break;
                     }
+                    return true;
                 }
             }
         }
