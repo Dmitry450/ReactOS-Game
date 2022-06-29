@@ -5,7 +5,8 @@
 #include "Texture.hpp"
 #include "World.hpp"
 #include "Tile.hpp"
-#include "Entity.hpp"
+#include "EntityManager.hpp"
+#include "Player.hpp"
 #include "Block.hpp"
 #include "Hitbox.hpp"
 #include <vector>
@@ -23,9 +24,10 @@ class GameState : public State {
 
     World world;
     Game::BlockDefManager block_defs;
+    Game::EntityManager entity_mgr;
 
-    //double playerX = 10, playerY = 10;
-    Game::Entity player = { Game::Hitbox(1024*TILE_WIDTH, 1024*TILE_HEIGHT, 4, 4) };
+    Game::Player player = Game::Player(1.0, 0.05, 1.0);
+
     std::vector<Game::Rect> frames = {
         {0, 0, 4, 5},
         {0, 5, 4, 5},
@@ -37,24 +39,6 @@ class GameState : public State {
     int currentFrame = 0;
 
     Game::Texture playerImg;
-
-    bool up = false,
-         down = false,
-         left = false,
-         right = false,
-         jump = false,
-         mouseLeft = false,
-         mouseRight = false;
-
-    int mouseX, mouseY;
-
-    float xVel = 0.0f, yVel = 0.0f;
-    float acc = 0.05f;
-    float xMaxVel = 1.0f, yMaxVel = 3.0f;
-    float gravity = 0.05f;
-    float jumpForce = 1.0f;
-
-    bool touchingGround = false;
 
     int camX, camY;
 
@@ -73,9 +57,9 @@ public:
         return &instance;
     }
 
-    // if move is true, the entity will be moved
-    // outside of the block it's touching based on its direction
-    bool handleCollision(Game::Entity &e, bool move = false, GameDirection dir = DIR_UP);
+    inline World &getWorld() { return world; }
+    inline Game::BlockDefManager &getBlockDefs() { return block_defs; }
+    inline Game::EntityManager &getEntityManager() { return entity_mgr; }
 
 protected:
     GameState() {}; // protected constructor for singleton

@@ -22,6 +22,16 @@ void GameState::setup() {
     playerImg.setColor(Game::FG_LIGHT_YELLOW);
 
     block_defs.load("block_defs.txt");
+
+    Game::PlayerEntity *player_entity = new Game::PlayerEntity(
+        Game::Hitbox(World::SIZE/2 * TILE_WIDTH, World::SIZE/2 * TILE_HEIGHT - 4, 4, 4)
+    );
+
+    std::unique_ptr<Game::Entity> player_entity_ptr(player_entity);
+
+    entity_mgr.addEntity(std::move(player_entity_ptr));
+
+    player_entity->assignPlayer(&player);
 }
 
 void GameState::cleanup() {
@@ -31,22 +41,19 @@ void GameState::cleanup() {
 void GameState::handleKeyDown(WORD keyCode) {
 
     switch (keyCode) {
-    case 0x57: // W
-        up = true;
-        break;
     case 0x53: // S
-        down = true;
+        player.down = true;
         break;
     case 0x41: // A
-        left = true;
+        player.left = true;
         currentFrame = 0;
         break;
     case 0x44: // D
-        right = true;
+        player.right = true;
         currentFrame = 3;
         break;
     case VK_SPACE:
-        jump = true;
+        player.jump = true;
         break;
     case 0x51:
         game->quit();
@@ -57,90 +64,31 @@ void GameState::handleKeyDown(WORD keyCode) {
 
 void GameState::handleKeyUp(WORD keyCode) {
     switch (keyCode) {
-    case 0x57: // W
-        up = false;
-        break;
     case 0x53: // S
-        down = false;
+        player.down = false;
         break;
     case 0x41: // A
-        left = false;
+        player.left = false;
         break;
     case 0x44: // D
-        right = false;
+        player.right = false;
     case VK_SPACE:
-        jump = false;
+        player.jump = false;
         break;
     }
 }
 
 void GameState::handleMouseEvent(MOUSE_EVENT_RECORD* event) {
-    mouseX = event->dwMousePosition.X;
-    mouseY = event->dwMousePosition.Y;
+    player.mouse.x = event->dwMousePosition.X - camX;
+    player.mouse.y = event->dwMousePosition.Y - camY;
 
-    mouseLeft = event->dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED;
-    mouseRight = event->dwButtonState & RIGHTMOST_BUTTON_PRESSED;
+    player.lmb = event->dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED;
+    player.rmb = event->dwButtonState & RIGHTMOST_BUTTON_PRESSED;
 }
 
 void GameState::update() {
 
-    if (xVel != 0 && !left && !right) {
-        if (xVel > 0) {
-            xVel = std::max<float>(xVel - acc, 0);
-        } else {
-            xVel = std::min<float>(xVel + acc, 0);
-        }
-    } else {
-
-        if (left && xVel > -xMaxVel) {
-            xVel = std::max<float>(xVel - acc, -xMaxVel);
-        }
-
-        if (right && xVel < xMaxVel) {
-            xVel = std::min<float>(xVel + acc, xMaxVel);
-        }
-
-    }
-
-    player.hitbox.x += xVel;
-
-    if (xVel != 0 &&
-        handleCollision(
-            player,
-            true,
-            (xVel > 0) ? DIR_RIGHT:DIR_LEFT
-        ))
-    {
-        xVel = 0;
-    }
-
-    if (jump && touchingGround) {
-        yVel -= jumpForce;
-    } else if (yVel < yMaxVel) {
-        yVel = std::min<float>(yVel + gravity, yMaxVel);
-    }
-
-    player.hitbox.y += yVel;
-
-    if (yVel > 0) {
-        touchingGround = handleCollision(player, true, DIR_DOWN);
-        if (touchingGround) {
-            yVel = 0;
-        }
-    } else if (yVel < 0) {
-        if (handleCollision(player, true, DIR_UP)) {
-            yVel = 0;
-        }
-        touchingGround = false;
-    }
-
-    // mining blocks
-    if (mouseLeft || mouseRight) {
-        int mouseBlockX = (mouseX-camX+(int)player.hitbox.x)/TILE_WIDTH;
-        int mouseBlockY = (mouseY-camY+(int)player.hitbox.y)/TILE_HEIGHT;
-
-        world.set(mouseBlockX,mouseBlockY, mouseRight?1:0);
-    }
+    entity_mgr.update(*this);
 
 }
 
@@ -148,12 +96,20 @@ void GameState::render(Game::Display& display) {
     display.setColor(Game::BG_AQUA | Game::FG_LIGHT_YELLOW);
     display.clear(' ');
 
+    Game::Entity *player_entity = player.getEntity(*this);
+    double player_x = 0, player_y = 0;
+
+    if (player_entity != nullptr) {
+        player_x = player_entity->hitbox.x;
+        player_y = player_entity->hitbox.y;
+    }
+
     auto blocks = block_defs.getAtlas().getTexture();
 
-    int startX = (static_cast<int>(player.hitbox.x)-camX)/TILE_WIDTH;
+    int startX = (static_cast<int>(player_x)-camX)/TILE_WIDTH;
     int endX = startX + game->getDisplay().getWidth()/TILE_WIDTH + 1;
 
-    int startY = (static_cast<int>(player.hitbox.y)-camY)/TILE_HEIGHT;
+    int startY = (static_cast<int>(player_y)-camY)/TILE_HEIGHT;
     int endY = startY + game->getDisplay().getHeight()/TILE_HEIGHT + 1;
 
     for (int x = startX; x <= endX; x++) {
@@ -164,15 +120,14 @@ void GameState::render(Game::Display& display) {
                 Game::BlockDef &def = block_defs.getDef(block);
                 blocks.setColor(def.color);
 
-                blocks.render(display, x*TILE_WIDTH-(int)player.hitbox.x+camX, y*TILE_HEIGHT-(int)player.hitbox.y+camY, &def.texture_rect);
+                blocks.render(display, x*TILE_WIDTH-(int)player_x+camX, y*TILE_HEIGHT-(int)player_y+camY, &def.texture_rect);
             }
         }
     }
 
-    int mouseBlockX = mouseX - (mouseX+camX+(int)player.hitbox.x)%TILE_WIDTH;
-    int mouseBlockY = mouseY - (mouseY+camY+(int)player.hitbox.y)%TILE_HEIGHT;
+    int mouseBlockX = player.mouse.x + camX - (player.mouse.x+2*camX+(int)player_x)%TILE_WIDTH;
+    int mouseBlockY = player.mouse.y + camY - (player.mouse.y+2*camY+(int)player_y)%TILE_HEIGHT;
     display.setTransparency(Game::TRANSPARENT_BG);
-
 
     display.setColor(Game::FG_WHITE);
     display.setChar(0xC9, mouseBlockX, mouseBlockY);
@@ -187,46 +142,9 @@ void GameState::render(Game::Display& display) {
     playerImg.render(display, camX, camY-1, &frames[currentFrame]);
 
     std::ostringstream strs;
-    strs << player.hitbox.x;
+    strs << player_x;
     strs << ", ";
-    strs << player.hitbox.y;
+    strs << player_y;
     display.writeString(strs.str().c_str(), 1, 1);
-
-}
-
-bool GameState::handleCollision(Game::Entity &e, bool move, GameDirection dir) {
-
-    for (int x = (int)floor(e.hitbox.x)/TILE_WIDTH; x < (int)ceil(e.hitbox.x+e.hitbox.w-1)/TILE_WIDTH + 1; x++) {
-        for (int y = e.hitbox.y/TILE_HEIGHT; y < (int)ceil(e.hitbox.y+e.hitbox.h-1)/TILE_HEIGHT + 1; y++) {
-
-            if (move) {
-                int block = world.get(x, y);
-
-                if (block == 0) {
-                    continue;
-                }
-
-                if (block_defs.getDef(block).solid) {
-                    switch (dir) {
-                    case DIR_UP:
-                        e.hitbox.y = (y+1) * TILE_HEIGHT;
-                        break;
-                    case DIR_DOWN:
-                        e.hitbox.y = y*TILE_HEIGHT - e.hitbox.h;
-                        break;
-                    case DIR_LEFT:
-                        e.hitbox.x = (x+1) * TILE_WIDTH;
-                        break;
-                    case DIR_RIGHT:
-                        e.hitbox.x = x*TILE_WIDTH - e.hitbox.w;
-                        break;
-                    }
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
 
 }
