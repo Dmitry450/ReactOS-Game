@@ -7,6 +7,7 @@
 #include "Tile.hpp"
 #include "Entity.hpp"
 #include "Block.hpp"
+#include "Hitbox.hpp"
 #include <vector>
 
 enum GameDirection {
@@ -24,7 +25,7 @@ class GameState : public State {
     Game::BlockDefManager block_defs;
 
     //double playerX = 10, playerY = 10;
-    Entity player = { 1024*TILE_WIDTH, 1024*TILE_HEIGHT, 4, 4};
+    Game::Entity player = { Game::Hitbox(1024*TILE_WIDTH, 1024*TILE_HEIGHT, 4, 4) };
     std::vector<Game::Rect> frames = {
         {0, 0, 4, 5},
         {0, 5, 4, 5},
@@ -74,7 +75,7 @@ public:
 
     // if move is true, the entity will be moved
     // outside of the block it's touching based on its direction
-    bool handleCollision(Entity* e, bool move = false, GameDirection dir = DIR_UP);
+    bool handleCollision(Game::Entity &e, bool move = false, GameDirection dir = DIR_UP);
 
 protected:
     GameState() {}; // protected constructor for singleton

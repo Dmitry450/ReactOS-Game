@@ -1,6 +1,8 @@
 CC=x86_64-w64-mingw32-g++
 CFLAGS=-Wall -static
-DEPS = Block.hpp Color.hpp Display.hpp Entity.hpp Game.hpp GameState.hpp IntroState.hpp Rect.hpp State.hpp Texture.hpp Tile.hpp Transparency.hpp World.hpp TextureAtlas.hpp
+DEPS = Block.hpp Color.hpp Display.hpp Hitbox.hpp Entity.hpp \
+	   Game.hpp GameState.hpp IntroState.hpp Rect.hpp State.hpp \
+	   Texture.hpp Tile.hpp Transparency.hpp World.hpp TextureAtlas.hpp
 ODIR = obj
 BDIR = bin
 

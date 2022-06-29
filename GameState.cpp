@@ -102,11 +102,11 @@ void GameState::update() {
 
     }
 
-    player.x += xVel;
+    player.hitbox.x += xVel;
 
     if (xVel != 0 &&
         handleCollision(
-            &player,
+            player,
             true,
             (xVel > 0) ? DIR_RIGHT:DIR_LEFT
         ))
@@ -120,15 +120,15 @@ void GameState::update() {
         yVel = std::min<float>(yVel + gravity, yMaxVel);
     }
 
-    player.y += yVel;
+    player.hitbox.y += yVel;
 
     if (yVel > 0) {
-        touchingGround = handleCollision(&player, true, DIR_DOWN);
+        touchingGround = handleCollision(player, true, DIR_DOWN);
         if (touchingGround) {
             yVel = 0;
         }
     } else if (yVel < 0) {
-        if (handleCollision(&player, true, DIR_UP)) {
+        if (handleCollision(player, true, DIR_UP)) {
             yVel = 0;
         }
         touchingGround = false;
@@ -136,8 +136,8 @@ void GameState::update() {
 
     // mining blocks
     if (mouseLeft || mouseRight) {
-        int mouseBlockX = (mouseX-camX+(int)player.x)/TILE_WIDTH;
-        int mouseBlockY = (mouseY-camY+(int)player.y)/TILE_HEIGHT;
+        int mouseBlockX = (mouseX-camX+(int)player.hitbox.x)/TILE_WIDTH;
+        int mouseBlockY = (mouseY-camY+(int)player.hitbox.y)/TILE_HEIGHT;
 
         world.set(mouseBlockX,mouseBlockY, mouseRight?1:0);
     }
@@ -150,10 +150,10 @@ void GameState::render(Game::Display& display) {
 
     auto blocks = block_defs.getAtlas().getTexture();
 
-    int startX = (static_cast<int>(player.x)-camX)/TILE_WIDTH;
+    int startX = (static_cast<int>(player.hitbox.x)-camX)/TILE_WIDTH;
     int endX = startX + game->getDisplay().getWidth()/TILE_WIDTH + 1;
 
-    int startY = (static_cast<int>(player.y)-camY)/TILE_HEIGHT;
+    int startY = (static_cast<int>(player.hitbox.y)-camY)/TILE_HEIGHT;
     int endY = startY + game->getDisplay().getHeight()/TILE_HEIGHT + 1;
 
     for (int x = startX; x <= endX; x++) {
@@ -164,13 +164,13 @@ void GameState::render(Game::Display& display) {
                 Game::BlockDef &def = block_defs.getDef(block);
                 blocks.setColor(def.color);
 
-                blocks.render(display, x*TILE_WIDTH-(int)player.x+camX, y*TILE_HEIGHT-(int)player.y+camY, &def.texture_rect);
+                blocks.render(display, x*TILE_WIDTH-(int)player.hitbox.x+camX, y*TILE_HEIGHT-(int)player.hitbox.y+camY, &def.texture_rect);
             }
         }
     }
 
-    int mouseBlockX = mouseX - (mouseX+camX+(int)player.x)%TILE_WIDTH;
-    int mouseBlockY = mouseY - (mouseY+camY+(int)player.y)%TILE_HEIGHT;
+    int mouseBlockX = mouseX - (mouseX+camX+(int)player.hitbox.x)%TILE_WIDTH;
+    int mouseBlockY = mouseY - (mouseY+camY+(int)player.hitbox.y)%TILE_HEIGHT;
     display.setTransparency(Game::TRANSPARENT_BG);
 
 
@@ -187,17 +187,17 @@ void GameState::render(Game::Display& display) {
     playerImg.render(display, camX, camY-1, &frames[currentFrame]);
 
     std::ostringstream strs;
-    strs << player.x;
+    strs << player.hitbox.x;
     strs << ", ";
-    strs << player.y;
+    strs << player.hitbox.y;
     display.writeString(strs.str().c_str(), 1, 1);
 
 }
 
-bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
+bool GameState::handleCollision(Game::Entity &e, bool move, GameDirection dir) {
 
-    for (int x = (int)floor(e->x)/TILE_WIDTH; x < (int)ceil(e->x+e->w-1)/TILE_WIDTH + 1; x++) {
-        for (int y = e->y/TILE_HEIGHT; y < (int)ceil(e->y+e->h-1)/TILE_HEIGHT + 1; y++) {
+    for (int x = (int)floor(e.hitbox.x)/TILE_WIDTH; x < (int)ceil(e.hitbox.x+e.hitbox.w-1)/TILE_WIDTH + 1; x++) {
+        for (int y = e.hitbox.y/TILE_HEIGHT; y < (int)ceil(e.hitbox.y+e.hitbox.h-1)/TILE_HEIGHT + 1; y++) {
 
             if (move) {
                 int block = world.get(x, y);
@@ -209,16 +209,16 @@ bool GameState::handleCollision(Entity* e, bool move, GameDirection dir) {
                 if (block_defs.getDef(block).solid) {
                     switch (dir) {
                     case DIR_UP:
-                        e->y = (y+1) * TILE_HEIGHT;
+                        e.hitbox.y = (y+1) * TILE_HEIGHT;
                         break;
                     case DIR_DOWN:
-                        e->y = y*TILE_HEIGHT - e->h;
+                        e.hitbox.y = y*TILE_HEIGHT - e.hitbox.h;
                         break;
                     case DIR_LEFT:
-                        e->x = (x+1) * TILE_WIDTH;
+                        e.hitbox.x = (x+1) * TILE_WIDTH;
                         break;
                     case DIR_RIGHT:
-                        e->x = x*TILE_WIDTH - e->w;
+                        e.hitbox.x = x*TILE_WIDTH - e.hitbox.w;
                         break;
                     }
                     return true;
