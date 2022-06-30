@@ -3,6 +3,10 @@
 
 void World::create(uint64_t seed) {
     // Generate world
+    if (blocks != nullptr) {
+        delete[] blocks;
+    }
+
     blocks = new uint16_t[SIZE*SIZE];
 
     for (int x = 0; x < SIZE; ++x) {

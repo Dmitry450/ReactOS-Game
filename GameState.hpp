@@ -40,18 +40,18 @@ class GameState : public State {
 
     Game::Texture playerImg;
 
-    int camX, camY;
+    int camX = 0, camY = 0;
 
 public:
 
-    void cleanup();
+    void cleanup() override;
 
-    void handleKeyDown(WORD keyCode);
-    void handleKeyUp(WORD keyCode);
-    void handleMouseEvent(MOUSE_EVENT_RECORD* event);
+    void handleKeyDown(WORD keyCode) override;
+    void handleKeyUp(WORD keyCode) override;
+    void handleMouseEvent(MOUSE_EVENT_RECORD* event) override;
 
-    void update();
-    void render(Game::Display& display);
+    void update() override;
+    void render(Game::Display& display) override;
 
     static GameState* Instance() {
         return &instance;
@@ -64,7 +64,7 @@ public:
 protected:
     GameState() {}; // protected constructor for singleton
 
-    void setup();
+    void setup() override;
 };
 
 #endif // GAMESTATE_HPP_INCLUDED

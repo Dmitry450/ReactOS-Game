@@ -14,13 +14,13 @@ class IntroState : public State {
 
 public:
 
-    void cleanup();
+    void cleanup() override;
 
-    void handleKeyDown(WORD keyCode);
-    void handleKeyUp(WORD keyCode);
+    void handleKeyDown(WORD keyCode) override;
+    void handleKeyUp(WORD keyCode) override;
 
-    void update();
-    void render(Game::Display& display);
+    void update() override;
+    void render(Game::Display& display) override;
 
     static IntroState* Instance() {
         return &instance;
@@ -29,7 +29,7 @@ public:
 protected:
     IntroState() {}; // protected constructor for singleton
 
-    void setup();
+    void setup() override;
 };
 
 #endif // INTROSTATE_HPP_INCLUDED

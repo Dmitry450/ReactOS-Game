@@ -4,18 +4,10 @@
 #include <stdexcept>
 
 #include "Block.hpp"
-#include "Color.hpp"
-#include "Tile.hpp"
 
 namespace Game {
 
     BlockDefManager::BlockDefManager() {
-        unknown = {
-            Color::FG_RED | Color::BG_WHITE,
-            { 0, 0, TILE_WIDTH, TILE_HEIGHT },
-            true,
-        };
-
         atlas.getTexture().setBackground('\0');
     }
 

@@ -20,8 +20,7 @@ namespace Game {
             writeArea = {0, 0, width, height};
 
             // create the display
-            display = (CHAR_INFO*)malloc(sizeof(CHAR_INFO) * width * height);
-
+            display = new CHAR_INFO[width*height];
 
         } else {
             // TODO:: error
@@ -43,8 +42,8 @@ namespace Game {
         }
     }
 
-    void Display::setChar(char c, unsigned int x, unsigned int y) {
-        if (x < width && y < height) {
+    void Display::setChar(char c, int x, int y) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
             display[y*width + x].Char.AsciiChar = c;
             display[y*width + x].Attributes = getDrawColor(x, y);
         }
@@ -72,24 +71,28 @@ namespace Game {
     void Display::drawLine(char c, int x1, int y1, int x2, int y2) {
         int dx = abs(x2-x1), sx = x1<x2 ? 1 : -1;
         int dy = abs(y2-y1), sy = y1<y2 ? 1 : -1;
-        int err = (dx>dy ? dx : -dy)/2, e2;
+        int err = (dx>dy ? dx : -dy)/2;
 
         for(;;){
             setChar(c, x1, y1);
             if (x1 == x2 && y1 == y2) {
                 break;
             }
-            e2 = err;
+            int e2 = err;
             if (e2 >-dx) { err -= dy; x1 += sx; }
             if (e2 < dy) { err += dx; y1 += sy; }
         }
     }
 
-    WORD Display::getDrawColor(unsigned int x, unsigned int y) {
+    WORD Display::getDrawColor(int x, int y) {
+        WORD drawColor = color;
+
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            return drawColor;
+        }
 
         CHAR_INFO* ci = &display[y*width + x];
 
-        WORD drawColor = color;
         if (transparency != TRANSPARENT_NO) {
 
             if (transparency == TRANSPARENT_BG) {

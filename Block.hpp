@@ -5,11 +5,12 @@
 #include <string>
 #include <cstdint>
 
-#define NOMINMAX
 #include <windows.h>
 
 #include "Rect.hpp"
 #include "TextureAtlas.hpp"
+#include "Color.hpp"
+#include "Tile.hpp"
 
 
 namespace Game {
@@ -22,7 +23,11 @@ namespace Game {
 
     class BlockDefManager {
         std::vector<BlockDef> defs;
-        BlockDef unknown;
+        BlockDef unknown = {
+            Color::FG_RED | Color::BG_WHITE,
+            { 0, 0, TILE_WIDTH, TILE_HEIGHT },
+            true,
+        };
 
         TextureAtlas atlas;
 

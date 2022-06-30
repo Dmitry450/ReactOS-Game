@@ -7,7 +7,7 @@
 
 class State {
 protected:
-    StateManager* game;
+    StateManager* game = nullptr;
     virtual void setup() {}; // user can override this to set up the state
 public:
 

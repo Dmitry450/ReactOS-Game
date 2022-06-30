@@ -1,7 +1,6 @@
 #ifndef DISPLAY_HPP_INCLUDED
 #define DISPLAY_HPP_INCLUDED
 
-#define NOMINMAX
 #include <windows.h>
 #include "Transparency.hpp"
 
@@ -27,16 +26,20 @@ namespace Game {
         // write area for the render function
         SMALL_RECT writeArea;
 
-        WORD getDrawColor(unsigned int x, unsigned int y);
+        WORD getDrawColor(int x, int y);
 
         INPUT_RECORD inputBuff[128];
         DWORD inputCount = 0;
-        int currentInput = 0;
+        DWORD currentInput = 0;
 
     public:
 
         Display(HANDLE window = GetStdHandle(STD_OUTPUT_HANDLE),
                 HANDLE input = GetStdHandle(STD_INPUT_HANDLE));
+
+        // delete these because... Why would you want to copy Display?
+        Display(const Display &copy) = delete;
+        void operator=(const Display &other) = delete;
 
         void render();
 
@@ -49,12 +52,11 @@ namespace Game {
         void setTransparency(Transparency transparency) { this->transparency = transparency; }
         Transparency getTransparency() { return transparency; }
 
-        // use unsigned so no negative values are allowed
-        void setChar(char c, unsigned int x, unsigned int y);
+        void setChar(char c, int x, int y);
 
         void writeString(const char* s, int x, int y);
 
-        void drawLine(char c, int x1, int y1, int y2, int x2);
+        void drawLine(char c, int x1, int y1, int x2, int y2);
 
         int getWidth() { return width; }
         void setWidth(int width) { this->width = width; }

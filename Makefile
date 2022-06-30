@@ -1,5 +1,5 @@
 CC=x86_64-w64-mingw32-g++
-CFLAGS=-Wall -static
+CFLAGS=-Wall -static -DNOMINMAX
 DEPS = Block.hpp Color.hpp Display.hpp Hitbox.hpp Entity.hpp EntityManager.hpp \
 	   PhysicalEntity.hpp Player.hpp Game.hpp GameState.hpp IntroState.hpp \
 	   Rect.hpp State.hpp Texture.hpp Tile.hpp Transparency.hpp World.hpp TextureAtlas.hpp
