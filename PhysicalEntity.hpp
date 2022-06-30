@@ -8,6 +8,7 @@
 namespace Game {
     struct PhysicsParams {
         double gravity;
+        double friction;
 
         double max_fall_speed;
 
@@ -29,8 +30,8 @@ namespace Game {
         Vector2d speed;
 
     public:
-        PhysicalEntity(const Hitbox &hitbox, const PhysicsParams &_physics = { 0.05, 3.0, true },
-                       const Vector2d &_speed = { 0, 0 }):
+        explicit PhysicalEntity(const Hitbox &hitbox, const PhysicsParams &_physics = { 0.05, 0.85, 3.0, true },
+                                const Vector2d &_speed = { 0, 0 }):
             Entity(hitbox), physics(_physics), speed(_speed)
         {}
 

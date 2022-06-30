@@ -17,6 +17,8 @@ namespace Game {
         if (physics.collision) {
             collide(game, false);
         }
+
+        speed.x *= physics.friction;
     }
 
     void PhysicalEntity::collide(GameState &game, bool by_x) {

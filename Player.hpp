@@ -20,7 +20,6 @@ namespace Game {
 
         double jump_force;
         double accel;
-        double friction;
 
         double max_speed;
 
@@ -30,7 +29,7 @@ namespace Game {
 
         Entity *getEntity(GameState &game);
 
-        Player(double _jump_force, double _accel, double friction, double _max_speed):
+        Player(double _jump_force, double _accel, double _max_speed):
             jump_force(_jump_force), accel(_accel), max_speed(_max_speed)
         {}
     };
@@ -39,10 +38,7 @@ namespace Game {
         Player *player = nullptr;
 
     public:
-        PlayerEntity(const Hitbox &hitbox, const PhysicsParams &_physics = { 0.05, 3.0, true },
-                     const Vector2d &_speed = { 0, 0 }):
-            PhysicalEntity(hitbox, _physics, _speed)
-        {}
+        using PhysicalEntity::PhysicalEntity;
 
         void update(GameState &game) override;
 

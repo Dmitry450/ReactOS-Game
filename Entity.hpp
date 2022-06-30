@@ -17,7 +17,7 @@ namespace Game {
     public:
         Hitbox hitbox;
 
-        Entity(const Hitbox &_hitbox):
+        explicit Entity(const Hitbox &_hitbox):
             hitbox(_hitbox)
         {}
 
