@@ -23,6 +23,10 @@ namespace Game {
             speed.x = std::min(player->max_speed, speed.x + player->accel);
         }
 
+        if (!player->left && !player->right) {
+            speed.x *= player->friction;
+        }
+
         if (player->jump && getCollisionInfo().blockd) {
             speed.y = -player->jump_force;
         }

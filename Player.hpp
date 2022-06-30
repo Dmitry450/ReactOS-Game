@@ -20,6 +20,7 @@ namespace Game {
 
         double jump_force;
         double accel;
+        double friction;
 
         double max_speed;
 
@@ -29,7 +30,7 @@ namespace Game {
 
         Entity *getEntity(GameState &game);
 
-        Player(double _jump_force, double _accel, double _max_speed):
+        Player(double _jump_force, double _accel, double friction, double _max_speed):
             jump_force(_jump_force), accel(_accel), max_speed(_max_speed)
         {}
     };

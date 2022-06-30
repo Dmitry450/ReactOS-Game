@@ -26,7 +26,7 @@ class GameState : public State {
     Game::BlockDefManager block_defs;
     Game::EntityManager entity_mgr;
 
-    Game::Player player = Game::Player(1.0, 0.05, 1.0);
+    Game::Player player = Game::Player(1.0, 0.05, 0.7, 1.0);
 
     std::vector<Game::Rect> frames = {
         {0, 0, 4, 5},
