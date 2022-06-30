@@ -58,6 +58,7 @@ namespace Game {
                         }
 
                         speed.x = 0;
+                        return;
                     } else {
                         if (speed.y > 0) {
                             hitbox.y = y*TILE_HEIGHT - hitbox.h;
@@ -68,6 +69,7 @@ namespace Game {
                         }
 
                         speed.y = 0;
+                        return;
                     }
                 }
             }
