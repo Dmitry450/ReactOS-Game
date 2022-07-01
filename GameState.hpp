@@ -24,6 +24,7 @@ class GameState : public State {
 
     World world;
     Game::BlockDefManager block_defs;
+    Game::ItemDefManager item_defs;
     Game::EntityManager entity_mgr;
 
     Game::Player player = Game::Player(1.0, 0.125, 1.0);

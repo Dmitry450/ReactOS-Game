@@ -2,8 +2,10 @@
 #define PLAYER_HPP_INCLUDED
 
 #include <cassert>
+#include <memory>
 
 #include "PhysicalEntity.hpp"
+#include "Inventory.hpp"
 
 namespace Game {
     struct Player {
@@ -25,13 +27,19 @@ namespace Game {
 
         uint16_t entity_id = 0;
 
-        // Maybe some other data
+        Inventory inventory;
+
+        static const int hotbar_entries = 4;
+        int hotbar_selected = 0;
+        std::shared_ptr<ItemDef> hotbar[hotbar_entries];
 
         Entity *getEntity(GameState &game);
 
         Player(double _jump_force, double _accel, double _max_speed):
-            jump_force(_jump_force), accel(_accel), max_speed(_max_speed)
-        {}
+            jump_force(_jump_force), accel(_accel), max_speed(_max_speed) {
+
+            inventory.resize(32);
+        }
     };
 
     class PlayerEntity: public PhysicalEntity {

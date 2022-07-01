@@ -1,6 +1,7 @@
 #include "GameState.hpp"
 #include "Tile.hpp"
 #include "Color.hpp"
+#include "ItemBlock.hpp"
 #include <algorithm>
 #include <math.h>
 #include <sstream>
@@ -22,6 +23,20 @@ void GameState::setup() {
     playerImg.setColor(Game::FG_LIGHT_YELLOW);
 
     block_defs.load("block_defs.txt");
+
+    std::shared_ptr<Game::ItemDef> grass_item_def = std::make_shared<Game::ItemDef>();
+    grass_item_def->name = "default:grass";
+    grass_item_def->description = "Grass block";
+    grass_item_def->controller = std::unique_ptr<Game::ItemController>(new Game::ItemBlock(1));
+
+    item_defs.registerItem(grass_item_def);
+
+    Game::ItemStack grass_istack;
+    grass_istack.set(grass_item_def, 10);
+
+    player.inventory.addItem(grass_istack);
+
+    player.hotbar[0] = grass_item_def;
 
     Game::PlayerEntity *player_entity = new Game::PlayerEntity(
         Game::Hitbox(World::SIZE/2 * TILE_WIDTH, World::SIZE/2 * TILE_HEIGHT - 4, 4, 4)

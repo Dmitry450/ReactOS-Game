@@ -28,10 +28,23 @@ namespace Game {
         }
 
         if (player->lmb || player->rmb) {
-            int x = (player->mouse.x + hitbox.x)/TILE_WIDTH;
-            int y = (player->mouse.y + hitbox.y)/TILE_HEIGHT;
+            auto &def = player->hotbar[player->hotbar_selected];
 
-            game.getWorld().set(x, y, player->rmb ? 1 : 0);
+            if (!def) {
+                return;
+            }
+
+            ItemStack *istack = player->inventory.find(def);
+
+            if (istack == nullptr) {
+                return;
+            }
+
+            if (!istack->empty()) {
+                Vector2d pos = { player->mouse.x + hitbox.x, player->mouse.y + hitbox.y };
+
+                istack->getDef()->controller->onUse(*istack, player, pos);
+            }
         }
     }
 }
