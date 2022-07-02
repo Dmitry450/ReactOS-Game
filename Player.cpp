@@ -49,11 +49,15 @@ namespace Game {
 
         sprite.update();
 
-        if (speed.x < 0) {
+        if (speed.x < -0.05) {
             sprite.setAnimation("walk_left");
-        } else if (speed.x > 0) {
+        }
+
+        if (speed.x > 0.05) {
             sprite.setAnimation("walk_right");
-        } else {
+        }
+
+        if (speed.x < 0.05 && speed.x > -0.05) {
             if (sprite.getCurrentAnimation() == "walk_left") {
                 sprite.setAnimation("stand_left");
             } else if (sprite.getCurrentAnimation() == "walk_right") {
