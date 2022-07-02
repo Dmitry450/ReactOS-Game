@@ -54,43 +54,12 @@ void GameState::cleanup() {
 }
 
 void GameState::handleKeyDown(WORD keyCode) {
-
-    switch (keyCode) {
-    case 0x53: // S
-        player.down = true;
-        break;
-    case 0x41: // A
-        player.left = true;
-        currentFrame = 0;
-        break;
-    case 0x44: // D
-        player.right = true;
-        currentFrame = 3;
-        break;
-    case VK_SPACE:
-        player.jump = true;
-        break;
-    case 0x51:
-        game->quit();
-        break;
-    }
+    key_handler.press(keyCode);
 
 }
 
 void GameState::handleKeyUp(WORD keyCode) {
-    switch (keyCode) {
-    case 0x53: // S
-        player.down = false;
-        break;
-    case 0x41: // A
-        player.left = false;
-        break;
-    case 0x44: // D
-        player.right = false;
-    case VK_SPACE:
-        player.jump = false;
-        break;
-    }
+    key_handler.release(keyCode);
 }
 
 void GameState::handleMouseEvent(MOUSE_EVENT_RECORD* event) {
@@ -102,9 +71,20 @@ void GameState::handleMouseEvent(MOUSE_EVENT_RECORD* event) {
 }
 
 void GameState::update() {
+    hud.update(*this);
+
+    if (key_handler.isPressed(0x51)) {
+        game->quit();
+    }
+
+    player.down = key_handler.isPressed(0x53);
+    player.left = key_handler.isPressed(0x41);
+    player.right = key_handler.isPressed(0x44);
+    player.jump = key_handler.isPressed(VK_SPACE);
 
     entity_mgr.update(*this);
 
+    key_handler.update();
 }
 
 void GameState::render(Game::Display& display) {
@@ -156,10 +136,6 @@ void GameState::render(Game::Display& display) {
 
     playerImg.render(display, camX, camY-1, &frames[currentFrame]);
 
-    std::ostringstream strs;
-    strs << player_x;
-    strs << ", ";
-    strs << player_y;
-    display.writeString(strs.str().c_str(), 1, 1);
+    hud.render(*this, display);
 
 }

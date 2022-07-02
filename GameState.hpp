@@ -1,6 +1,8 @@
 #ifndef GAMESTATE_HPP_INCLUDED
 #define GAMESTATE_HPP_INCLUDED
 
+#include <vector>
+
 #include "State.hpp"
 #include "Texture.hpp"
 #include "World.hpp"
@@ -9,7 +11,8 @@
 #include "Player.hpp"
 #include "Block.hpp"
 #include "Hitbox.hpp"
-#include <vector>
+#include "KeyHandler.hpp"
+#include "Hud.hpp"
 
 enum GameDirection {
     DIR_UP,
@@ -43,6 +46,9 @@ class GameState : public State {
 
     int camX = 0, camY = 0;
 
+    Game::KeyHandler key_handler;
+    Game::Hud hud;
+
 public:
 
     void cleanup() override;
@@ -61,6 +67,8 @@ public:
     inline World &getWorld() { return world; }
     inline Game::BlockDefManager &getBlockDefs() { return block_defs; }
     inline Game::EntityManager &getEntityManager() { return entity_mgr; }
+    inline Game::Player &getPlayer() { return player; }
+    inline Game::KeyHandler &getKeyHandler() { return key_handler; }
 
 protected:
     GameState() {}; // protected constructor for singleton
