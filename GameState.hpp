@@ -13,6 +13,7 @@
 #include "Hitbox.hpp"
 #include "KeyHandler.hpp"
 #include "Hud.hpp"
+#include "Vector.hpp"
 
 enum GameDirection {
     DIR_UP,
@@ -44,7 +45,8 @@ class GameState : public State {
 
     Game::Texture playerImg;
 
-    int camX = 0, camY = 0;
+    Game::Vector2i cam = { 0, 0 };
+    Game::Vector2i cam_offset = { 0, 0 };
 
     Game::KeyHandler key_handler;
     Game::Hud hud;
@@ -69,6 +71,7 @@ public:
     inline Game::EntityManager &getEntityManager() { return entity_mgr; }
     inline Game::Player &getPlayer() { return player; }
     inline Game::KeyHandler &getKeyHandler() { return key_handler; }
+    inline Game::Vector2i &getCamera() { return cam; }
 
 protected:
     GameState() {}; // protected constructor for singleton

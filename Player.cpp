@@ -46,5 +46,25 @@ namespace Game {
                 istack->getDef()->controller->onUse(*istack, player, pos);
             }
         }
+
+        sprite.update();
+
+        if (speed.x < 0) {
+            sprite.setAnimation("walk_left");
+        } else if (speed.x > 0) {
+            sprite.setAnimation("walk_right");
+        } else {
+            if (sprite.getCurrentAnimation() == "walk_left") {
+                sprite.setAnimation("stand_left");
+            } else if (sprite.getCurrentAnimation() == "walk_right") {
+                sprite.setAnimation("stand_right");
+            }
+        }
     }
-}
+
+    void PlayerEntity::render(Display &d, Vector2i cam) {
+        sprite.render(d, {
+            static_cast<int>(hitbox.x) - cam.x,
+            static_cast<int>(hitbox.y) - cam.y });
+    }
+} // namespace Game

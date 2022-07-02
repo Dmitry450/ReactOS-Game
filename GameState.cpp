@@ -12,8 +12,8 @@ void GameState::setup() {
 
     Game::Display& d = game->getDisplay();
 
-    camX = d.getWidth() / 2;
-    camY = d.getHeight() / 2;
+    cam_offset.x = d.getWidth() / 2;
+    cam_offset.y = d.getHeight() / 2;
 
     world.create();
 
@@ -42,6 +42,8 @@ void GameState::setup() {
         Game::Hitbox(World::SIZE/2 * TILE_WIDTH, World::SIZE/2 * TILE_HEIGHT - 4, 4, 4)
     );
 
+    player_entity->loadSprite("resources/entities/player.sprite");
+
     std::unique_ptr<Game::Entity> player_entity_ptr(player_entity);
 
     entity_mgr.addEntity(std::move(player_entity_ptr));
@@ -63,8 +65,8 @@ void GameState::handleKeyUp(WORD keyCode) {
 }
 
 void GameState::handleMouseEvent(MOUSE_EVENT_RECORD* event) {
-    player.mouse.x = event->dwMousePosition.X - camX;
-    player.mouse.y = event->dwMousePosition.Y - camY;
+    player.mouse.x = event->dwMousePosition.X - cam_offset.x;
+    player.mouse.y = event->dwMousePosition.Y - cam_offset.y;
 
     player.lmb = event->dwButtonState & FROM_LEFT_1ST_BUTTON_PRESSED;
     player.rmb = event->dwButtonState & RIGHTMOST_BUTTON_PRESSED;
@@ -84,6 +86,13 @@ void GameState::update() {
 
     entity_mgr.update(*this);
 
+    Game::Entity *player_entity = player.getEntity(*this);
+
+    if (player_entity != nullptr) {
+        cam.x = static_cast<int>(player_entity->hitbox.x);
+        cam.y = static_cast<int>(player_entity->hitbox.y);
+    }
+
     key_handler.update();
 }
 
@@ -91,37 +100,30 @@ void GameState::render(Game::Display& display) {
     display.setColor(Game::BG_AQUA | Game::FG_LIGHT_YELLOW);
     display.clear(' ');
 
-    Game::Entity *player_entity = player.getEntity(*this);
-    double player_x = 0, player_y = 0;
-
-    if (player_entity != nullptr) {
-        player_x = player_entity->hitbox.x;
-        player_y = player_entity->hitbox.y;
-    }
-
     auto blocks = block_defs.getAtlas().getTexture();
 
-    int startX = (static_cast<int>(player_x)-camX)/TILE_WIDTH;
-    int endX = startX + game->getDisplay().getWidth()/TILE_WIDTH + 1;
+    int start_x = (cam.x-cam_offset.x)/TILE_WIDTH;
+    int end_x = start_x + game->getDisplay().getWidth()/TILE_WIDTH + 1;
 
-    int startY = (static_cast<int>(player_y)-camY)/TILE_HEIGHT;
-    int endY = startY + game->getDisplay().getHeight()/TILE_HEIGHT + 1;
+    int start_y = (cam.y-cam_offset.y)/TILE_HEIGHT;
+    int end_y = start_y + game->getDisplay().getHeight()/TILE_HEIGHT + 1;
 
-    for (int x = startX; x <= endX; x++) {
-        for (int y = startY; y <= endY; y++) {
+    for (int x = start_x; x <= end_x; x++) {
+        for (int y = start_y; y <= end_y; y++) {
             int block = world.get(x, y);
 
             if (block != 0) {
                 Game::BlockDef &def = block_defs.getDef(block);
                 blocks.setColor(def.color);
 
-                blocks.render(display, x*TILE_WIDTH-(int)player_x+camX, y*TILE_HEIGHT-(int)player_y+camY, &def.texture_rect);
+                blocks.render(display, x*TILE_WIDTH - (cam.x-cam_offset.x), y*TILE_HEIGHT - (cam.y-cam_offset.y), &def.texture_rect);
             }
         }
     }
 
-    int mouseBlockX = player.mouse.x + camX - (player.mouse.x+2*camX+(int)player_x)%TILE_WIDTH;
-    int mouseBlockY = player.mouse.y + camY - (player.mouse.y+2*camY+(int)player_y)%TILE_HEIGHT;
+    // TODO - move this into HUD
+    int mouseBlockX = player.mouse.x + cam_offset.x - (player.mouse.x+2*cam_offset.y+cam.x)%TILE_WIDTH;
+    int mouseBlockY = player.mouse.y + cam_offset.y - (player.mouse.y+2*cam_offset.y+cam.y)%TILE_HEIGHT;
     display.setTransparency(Game::TRANSPARENT_BG);
 
     display.setColor(Game::FG_WHITE);
@@ -134,7 +136,7 @@ void GameState::render(Game::Display& display) {
     display.setChar(0xBC, mouseBlockX + TILE_WIDTH - 1, mouseBlockY + TILE_HEIGHT - 1);
     display.drawLine(0xBA, mouseBlockX + TILE_WIDTH - 1, mouseBlockY + TILE_HEIGHT - 2, mouseBlockX + TILE_WIDTH - 1, mouseBlockY + 1);
 
-    playerImg.render(display, camX, camY-1, &frames[currentFrame]);
+    entity_mgr.render(display, cam-cam_offset);
 
     hud.render(*this, display);
 

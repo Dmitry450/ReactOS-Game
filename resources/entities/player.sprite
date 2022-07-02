@@ -1,0 +1,17 @@
+resources/entities/player.txt light_yellow black background
+
+stand_left 1 999
+0 0 4 5
+
+stand_right 1 999
+0 15 4 5
+
+walk_left 3 35
+0 0 4 5
+0 5 4 5
+0 10 4 5
+
+walk_right 3 35
+0 15 4 5
+0 20 4 5
+0 25 4 5

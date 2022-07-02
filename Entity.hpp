@@ -5,6 +5,7 @@
 
 #include "Hitbox.hpp"
 #include "Display.hpp"
+#include "Vector.hpp"
 
 // Forward declaration
 class GameState;
@@ -25,6 +26,7 @@ namespace Game {
         uint16_t getId() { return id; }
 
         virtual void update(GameState &game) {}
+        virtual void render(Display &d, Vector2i cam) {}
     };
 }
 

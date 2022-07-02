@@ -3,9 +3,11 @@
 
 #include <cassert>
 #include <memory>
+#include <string>
 
 #include "PhysicalEntity.hpp"
 #include "Inventory.hpp"
+#include "Sprite.hpp"
 
 namespace Game {
     struct Player {
@@ -44,11 +46,22 @@ namespace Game {
 
     class PlayerEntity: public PhysicalEntity {
         Player *player = nullptr;
+        Sprite sprite;
 
     public:
         using PhysicalEntity::PhysicalEntity;
 
         void update(GameState &game) override;
+        void render(Display &d, Vector2i cam) override;
+
+        inline void loadSprite(const std::string &path) {
+            if (!sprite.load(path)) {
+                // TODO - i need to handle such errors, not ignore
+                //throw "bruh";
+            }
+
+            sprite.setAnimation("stand_right");
+        }
 
         inline void assignPlayer(Player *player) {
             this->player = player;

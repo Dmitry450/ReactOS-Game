@@ -6,6 +6,7 @@
 #include <cstdint>
 
 #include "Entity.hpp"
+#include "Vector.hpp"
 
 namespace Game {
 
@@ -67,6 +68,12 @@ namespace Game {
         void update(GameState &game) {
             for (auto iter = entities.begin(); iter != entities.end(); ++iter) {
                 iter->second->update(game);
+            }
+        }
+
+        void render(Display &d, Vector2i cam) {
+            for (auto iter = entities.begin(); iter != entities.end(); ++iter) {
+                iter->second->render(d, cam);
             }
         }
 
